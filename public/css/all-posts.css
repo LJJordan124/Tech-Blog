@@ -1,0 +1,73 @@
+
+textarea {
+    resize: none;
+    width: 100%;
+    height: 100px;
+}
+
+.post-box {
+    background-color: #31261b;
+    padding: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.heading-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #5e8cff;
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 100%;
+}
+
+.heading-box:hover {
+    filter: brightness(80%);
+}
+
+.content-box {
+    background-color: #100c08;
+    padding: 10px;
+}
+
+.post-box p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: white;
+}
+
+.edit-btn {
+    padding: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #9e9375;
+    color: white;
+    font-family: monospace;
+    font-size: 1.2rem;
+    /* cursor: pointer; */
+    border-radius: 15px;
+    /* margin-left: auto;
+    margin-right: auto; */
+    width: fit-content;
+    text-align: center;
+    border: 0;
+}
+
+.edit-btn:hover {
+    filter: brightness(80%);
+}
+
+.comment-box {
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #7fad92;
+}
+
+.comment-box p {
+    color: white;
+}
