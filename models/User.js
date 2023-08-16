@@ -1,66 +1,48 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/connection');
+const Sequelize = require('sequelize');
+const sequelizeConnection = require('../config/sequelizeConnection');
 const bcrypt = require('bcrypt');
 
-// User model
-class User extends Model {
-    // set up method to run on instance data (per user) to check password 
-    checkPassword(loginPW) {
-        return bcrypt.compareSync(loginPW, this.password);
-    }
-}
+const User = sequelizeConnection.define('user', {
 
-// define table columns and configuration
-User.init(
-  {
-    // define an id column
     id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
+        allowNull: false
     },
-    // define a username column
+
     username: {
-        type: DataTypes.STRING,
-        allowNull:false
-    },
-    // define an email column 
-    email: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
         validate: {
-            isEmail: true
+            len: [3, 26],
         }
     },
-    // define a password column 
+
     password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         validate: {
-            len: [4]
+            len: [5, 60]
         }
     }
-  },
-  {
-    hooks: {
-        async beforeCreate(newUserData) {
-            newUserData.password = await bcrypt.hash(newUserData.password, 10);
-            return newUserData;
-            
-        },
-        async beforeUpdate(updatedUserData) {
-            updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
-            return updatedUserData;
-        }
-    },
-    sequelize,
+
+}, {
+    sequelize: sequelizeConnection,
     timestamps: false,
     freezeTableName: true,
+    modelName: 'users',
     underscored: true,
-    modelName: 'user'
-  }
-);
+});
+
+User.beforeCreate(async user => {
+    const userData = user.dataValues;
+    userData.password = await bcrypt.hash(userData.password, 10);
+});
+
+User.prototype.validatePassword = function (rawPassword) {
+    console.log('this user password: ', this.password);
+    return bcrypt.compare(rawPassword, this.password);
+}
 
 module.exports = User;
