@@ -1,75 +1,66 @@
 const router = require('express').Router();
-const { Post, User, Comment } = require('../models');
+const { Post, User, Comment } = require('../models/');
 const withAuth = require('../utils/auth');
-const sequelize = require('../config/connection');
 
-// Displaying posts on dashboard
-router.get('/', withAuth, (req, res) => {
-    Post.findAll({
-        where: {
-            user_id: req.session.user_id
-        },
-        attributes: [ 'id', 'post_text', 'title', 'created_at' ],
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: [ 'username' ]
-                }
-            },
-            {
-                model: User,
-                attributes: [ 'username' ]
-            }
-        ]
-    })
-    .then(dbPostData => {
-        const posts = dbPostData.map(post => post.get({ plain: true }));
-        res.render('dashboard', { posts, loggedIn: true });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+// *DONE
+router.get('/', withAuth, async (req, res) => {
+  try {
+    // store the results of the db query in a variable called postData. should use something that "finds all" from the Post model. may need a where clause!
+    const postData = await Post.findAll({
+      attributes: { exclude: ['updatedAt', 'user_id'] },
+      include: [
+        { model: User, attributes: { exclude: ['updatedAt', 'password'] }},
+        { model: Comment },
+      ],
+      where: {
+        user_id: req.session.userId,
+      }
     });
+
+    // this sanitizes the data we just got from the db above (you have to create the above)
+    const posts = postData.map((post) => post.get({ plain: true }));
+
+    // fill in the view to be rendered
+    res.render('all-posts-admin', {
+      // this is how we specify a different layout other than main! no change needed
+      layout: 'dashboard',
+      payload: { posts, session: req.session }
+    });
+  } catch (err) {
+    console.log(err);
+    res.redirect('login');
+  }
 });
 
-// Edit Page
-router.get('/edit/:id', withAuth, (req, res) => {
-    Post.findOne({
-        where: {
-            id: req.params.id
-        },
-        attributes: [ 'id', 'post_text', 'title', 'created_at' ],
-        include: [
-            {
-                model: User,
-                attributes: [ 'username' ]
-            },
-            {
-                model: Comment,
-                attributes: [ 'id', 'comment_text', 'post_id', 'user_id', 'created_at' ],
-                include: {
-                    model: User,
-                    attributes: [ 'username' ]
-                }
-            }
-        ]
-    })
-    .then(dbPostData => {
-        const post = dbPostData.get({ plain: true });
-        res.render('edit-posts', { post, loggedIn: true });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
-    });
+// *DONE
+router.get('/new', withAuth, (req, res) => {
+  // what view should we send the client when they want to create a new-post? (change this next line)
+  res.render('new-post', {
+    // again, rendering with a different layout than main! no change needed
+    layout: 'dashboard',
+  });
 });
 
-// Newpost page
-router.get('/newpost', (req, res) => {
-    res.render('new-posts');
+router.get('/edit/:id', withAuth, async (req, res) => {
+  try {
+    // what should we pass here? we need to get some data passed via the request body
+    const postData = await Post.findByPk(req.params.id);
+
+    if (postData) {
+      // serializing the data
+      const post = postData.get({ plain: true });
+      // which view should we render if we want to edit a post?
+      res.render('edit-post', {
+        layout: 'dashboard',
+        payload: { posts: post, session: req.session }
+      });
+    } else {
+      res.status(404).end();
+    }
+  } catch (err) {
+    console.log(err);
+    res.redirect('login');
+  }
 });
 
 module.exports = router;
