@@ -2,41 +2,41 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Kee Tech Blog</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+  <title>The Tech Blog</title>
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,400i,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/all-posts.css">
 </head>
 
-<body>
-  <div class="wrapper">
-    <header>
-      <h1>
-        <p class="blog-title">The Kee Tech Blog <i class="large material-icons">laptop_mac</i></p>
-      </h1>
-    
-    <nav>
-    {{#if loggedIn}}
-    <a href="/" class="homepage">Homepage</a>
-    <a href="/dashboard">Dashboard</a>
-    <button id="logout" class="btn-no-style">Logout</button>
-    {{else}}
-    <a href="/" class="homepage">Homepage</a>
-    <a href="/login">Login</a>
-    {{/if}}
-    </nav>
-    </header>
-    <main>
-      {{{ body }}}
-    </main>
-  </div>
+<body class="flex-column min-100-vh">
+  <nav class="navbar">
+    <ul>
+      <li class="li-inline nav-item"><a href="/">Home</a></li>
+      <li class="li-inline nav-item"><a href="/dashboard">Dashboard</a></li>
+      {{#if payload.session.loggedIn}}
+        <li class="li-inline nav-item"><a href="#" id="logout-link">Logout</a></li>
+      {{else}}
+        <li class="li-inline nav-item"><a href="/login">Login</a></li>
+      {{/if}}
+    </ul>
+  </nav>
+  <header class="hero">
+    <h1 class="app-title"><a href="/">The Tech Blog</a></h1>
+  </header>
 
-    {{#if loggedIn}}
-    <script src="/javascript/logout.js"></script>
-    {{/if}}
+  <main class="col-auto">
+    {{{body}}}
+  </main>
 
+  <footer class="flex-row justify-center">
+    &copy; The Tech Blog Folks
+  </footer>
 </body>
 
 </html>
+
+<script src="/js/logout.js"></script>
+
+

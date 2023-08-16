@@ -1,22 +1,19 @@
-<!-- displaying articles -->
-{{> post-info post}}
+{{>post-box this}}
 
-<!-- displaying form and comments-->
-<!-- only display if logged in -->
-{{#if loggedIn}}
-<form class="comment-form">
-  <div>
-    <textarea name="comment-body"></textarea>
-  </div>
+<div id="post-id" data-post-id="{{payload.posts.[0].id}}">
+    {{#if payload.session.loggedIn}}
+        <p>Leave a Comment:</p>
+        <textarea name="comment-body" type="text" placeholder="..." id="content-field"></textarea>
+        <button id="comment-btn">Post Comment</button>
+    {{else}}
+        <p>Please login or create an account to leave a comment</p>
+    {{/if}}
+    <div>
+        <p>Comments:</p>
+        <div class="comment-container">
+            {{>comment-box this}}
+        </div>
+    </div>
+</div>
 
-  <div>
-    <button type="submit">Add Comment</button>
-  </div>
-</form>
-{{/if}}
-
-{{> comments post.comments}}
-
-{{#if loggedIn}}
-<script src="/javascript/comment.js"></script>
-{{/if}}
+<script src="/js/comment.js"></script>

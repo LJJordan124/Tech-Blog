@@ -1,17 +1,14 @@
-<section>
-  <h2>Create New Post</h2>
-
-  <form class="new-post-form">
+<div>
+    <h2>Create New Post: </h2>
     <div>
-      <label for="post-title">Title</label>
-      <input type="text" id="post-title" size="60" name="post-title" />
+        <label for="title">Post Title: </label>
+        <input name="title" type="text" placeholder="Enter Title" id="title-field">
     </div>
     <div>
-      <label for="post-text">Content</label>
-      <textarea name="post-text"></textarea>
+        <label for="content">Content: </label>
+        <textarea name="content" type="text" placeholder="Start Here" id="content-field"></textarea>
     </div>
-    <button type="submit" class="btn">Create Post</button>
-  </form>
-</section>
+    <button id="submit-btn">Submit</button>
+</div>
 
-<script src="/javascript/add-post.js"></script>
+<script src="../js/new.js"></script>
