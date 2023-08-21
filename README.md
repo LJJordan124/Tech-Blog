@@ -50,14 +50,10 @@ https://ljjordan124-tech-blog-af254b5a59c1.herokuapp.com/
 
 ## Instructions
 Run the following in the terminal for installation:
+* npm i
 * npm i mysql2
 * npm i inquirer
 * npm i sequelize
-* npm i dotenv
-* npm i bcrypt
-* npm i express-handlebars
-* npm i express-session
-* npm i connect-session-sequelize
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
