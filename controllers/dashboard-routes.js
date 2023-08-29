@@ -1,66 +1,49 @@
-const router = require('express').Router();
-const { Post, User, Comment } = require('../models/');
-const withAuth = require('../utils/auth');
 
-// *DONE
-router.get('/', withAuth, async (req, res) => {
-  try {
-    // store the results of the db query in a variable called postData. should use something that "finds all" from the Post model. may need a where clause!
-    const postData = await Post.findAll({
-      attributes: { exclude: ['updatedAt', 'user_id'] },
-      include: [
-        { model: User, attributes: { exclude: ['updatedAt', 'password'] }},
-        { model: Comment },
-      ],
-      where: {
-        user_id: req.session.userId,
-      }
-    });
+const Sequelize = require('sequelize');
+const sequelizeConnection = require('../config/sequelizeConnection');
+const bcrypt = require('bcrypt');
 
-    // this sanitizes the data we just got from the db above (you have to create the above)
-    const posts = postData.map((post) => post.get({ plain: true }));
+const User = sequelizeConnection.define('user', {
 
-    // fill in the view to be rendered
-    res.render('all-posts-admin', {
-      // this is how we specify a different layout other than main! no change needed
-      layout: 'dashboard',
-      payload: { posts, session: req.session }
-    });
-  } catch (err) {
-    console.log(err);
-    res.redirect('login');
-  }
-});
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
 
-// *DONE
-router.get('/new', withAuth, (req, res) => {
-  // what view should we send the client when they want to create a new-post? (change this next line)
-  res.render('new-post', {
-    // again, rendering with a different layout than main! no change needed
-    layout: 'dashboard',
-  });
-});
+    username: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: [3, 26],
+        }
+    },
 
-router.get('/edit/:id', withAuth, async (req, res) => {
-  try {
-    // what should we pass here? we need to get some data passed via the request body
-    const postData = await Post.findByPk(req.params.id);
-
-    if (postData) {
-      // serializing the data
-      const post = postData.get({ plain: true });
-      // which view should we render if we want to edit a post?
-      res.render('edit-post', {
-        layout: 'dashboard',
-        payload: { posts: post, session: req.session }
-      });
-    } else {
-      res.status(404).end();
+    password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            len: [5, 60]
+        }
     }
-  } catch (err) {
-    console.log(err);
-    res.redirect('login');
-  }
+
+}, {
+    sequelize: sequelizeConnection,
+    timestamps: false,
+    freezeTableName: true,
+    modelName: 'users',
+    underscored: true,
 });
 
-module.exports = router;
+User.beforeCreate(async user => {
+    const userData = user.dataValues;
+    userData.password = await bcrypt.hash(userData.password, 10);
+});
+
+User.prototype.validatePassword = function (rawPassword) {
+    console.log('this user password: ', this.password);
+    return bcrypt.compare(rawPassword, this.password);
+}
+
+module.exports = User;
