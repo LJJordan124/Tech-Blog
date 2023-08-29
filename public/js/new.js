@@ -1,27 +1,28 @@
-const signupFormHandler = async function(event) {
-    event.preventDefault();
-  
-    const usernameEl = document.querySelector('#username-field');
-    const passwordEl = document.querySelector('#password-field');
-  
-    const response = await fetch('/api/user', {
-      method: 'POST',
-      body: JSON.stringify({
-        username: usernameEl.value,
-        password: passwordEl.value,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-  
-    const responseData = await response.json();
-  
-    if (response.ok) {
-      document.location.replace('/dashboard');
-    } else {
-      alert('Failed to sign up: ' + responseData.message);
-    }
-  };
-  
-  document
-    .querySelector('#signup-btn')
-    .addEventListener('click', signupFormHandler);
+const newFormHandler = async function(event) {
+  event.preventDefault();
+
+  const title = document.querySelector('#title-field').value.trim();
+  const content = document.querySelector('#content-field').value.trim();
+
+  if (!(title && content)) {
+    alert('Invalid form. Please fill out all required fields');
+    return;
+  }
+
+  await fetch(`/api/post`, {
+    method: 'POST',
+    body: JSON.stringify({
+      title,
+      content,
+    }),
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  document.location.replace('/dashboard');
+};
+
+console.log('running new post script');
+
+document
+  .querySelector('#submit-btn')
+  .addEventListener('click', newFormHandler);
