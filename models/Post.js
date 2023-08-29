@@ -1,7 +1,8 @@
-const Sequelize = require('sequelize');
-const connection = require('../config/connection');
 
-const Post = connection.define('post', {
+const Sequelize = require('sequelize');
+const sequelizeConnection = require('../config/sequelizeConnection');
+
+const Post = sequelizeConnection.define('post', {
 
     id: {
         type: Sequelize.INTEGER,
@@ -30,7 +31,7 @@ const Post = connection.define('post', {
     }
 
 }, {
-    sequelize: connection,
+    sequelize: sequelizeConnection,
     timestamps: true,
     freezeTableName: true,
     modelName: 'posts',
@@ -38,3 +39,4 @@ const Post = connection.define('post', {
 });
 
 module.exports = Post;
+
