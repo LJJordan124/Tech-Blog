@@ -7,7 +7,7 @@ const helpers = require('./utils/helpers');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const sequelizeConnection = require('./config/connection');
+const sequelize = require('./config/connection');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const models = require('./models'); // init models
 
@@ -17,7 +17,7 @@ const sess = {
   resave: false,
   saveUninitialized: true,
   store: new SequelizeStore({
-    db: sequelizeConnection
+    db: sequelize
   })
 };
 
@@ -37,5 +37,5 @@ app.use(require('./controllers/'));
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}!`);
-  sequelizeConnection.sync({ force: false })//.then(() => require('./seeds'))
+  sequelize.sync({ force: false })//.then(() => require('./seeds'))
 });
