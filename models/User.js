@@ -1,8 +1,9 @@
+
 const Sequelize = require('sequelize');
-const connection = require('../config/connection');
+const sequelizeConnection = require('../config/sequelizeConnection');
 const bcrypt = require('bcrypt');
 
-const User = connection.define('user', {
+const User = sequelizeConnection.define('user', {
 
     id: {
         type: Sequelize.INTEGER,
@@ -28,7 +29,7 @@ const User = connection.define('user', {
     }
 
 }, {
-    sequelize: connection,
+    sequelize: sequelizeConnection,
     timestamps: false,
     freezeTableName: true,
     modelName: 'users',
