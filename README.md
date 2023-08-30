@@ -51,9 +51,13 @@ https://ljjordan124-tech-blog-af254b5a59c1.herokuapp.com/
 ## Instructions
 Run the following in the terminal for installation:
 * npm i
-* npm i mysql2
-* npm i inquirer
-* npm i sequelize
+* node seeds
+
+Run the following in your MYSQL terminal:
+* source db/schema.sql
+
+Run the following in the terminal for installation:
+* node seeds
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
